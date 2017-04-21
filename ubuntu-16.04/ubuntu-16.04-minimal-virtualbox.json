@@ -1,0 +1,61 @@
+{
+    "variables": {
+        "disk_size": "10240"
+    },
+    "builders": [
+        {
+            "name": "xenial64-minimal-virtualbox",
+            "type": "virtualbox-iso",
+            "headless": true,
+            "guest_os_type": "Ubuntu_64",
+            "disk_size": "{{user `disk_size`}}",
+            "iso_url": "http://releases.ubuntu.com/16.04/ubuntu-16.04.2-server-amd64.iso",
+            "iso_checksum": "2bce60d18248df9980612619ff0b34e6",
+            "iso_checksum_type": "md5",
+            "http_directory": "http",
+            "ssh_username": "vagrant",
+            "ssh_password": "vagrant",
+            "ssh_wait_timeout": "10m",
+            "shutdown_command": "echo 'vagrant'|sudo -S shutdown -P now",
+            "boot_wait": "10s",
+            "boot_command": [
+                "<esc><wait><f6><esc>",
+                "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+                "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+                "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+                "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+                "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+                "<bs><bs><bs><bs><bs><bs><bs><bs>",
+                "/install/vmlinuz initrd=/install/initrd.gz ",
+                "auto=true noprompt=true ",
+                "url=http://{{.HTTPIP}}:{{.HTTPPort}}/xenial_minimal_vagrant.preseed ",
+                "hostname=vagrant-xenial64 domain= ",
+                "--<enter>"
+            ],
+            "vboxmanage": [
+                ["modifyvm", "{{.Name}}", "--memory", "1024"],
+                ["modifyvm", "{{.Name}}", "--cpus", "1"]
+            ]
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "execute_command": "echo 'vagrant' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+            "scripts": [
+                "scripts/update.sh",
+                "scripts/vagrant.sh",
+                "scripts/network.sh",
+                "scripts/shrink.sh"
+            ]
+        }
+    ],
+    "post-processors": [
+        {
+            "type": "vagrant",
+            "keep_input_artifact": false,
+            "vagrantfile_template": "./Vagrantfile.template",
+            "output": "output/xenial64-minimal-virtualbox.box"
+        }
+    ]
+}
