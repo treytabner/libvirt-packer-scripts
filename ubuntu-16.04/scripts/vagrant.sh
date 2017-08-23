@@ -22,9 +22,9 @@ echo "UseDNS no" >> /etc/sshd_config
 printf "vagrant\nvagrant\n" | passwd root
 passwd -u root
 
+# Install Docker
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable" | tee /etc/apt/sources.list.d/docker.list
 
-
-apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
-echo "deb https://apt.dockerproject.org/repo ubuntu-xenial main" | tee /etc/apt/sources.list.d/docker.list
 apt-get update
-apt-get install -y docker-engine
+apt-get install -y docker-ce=17.06.1*
