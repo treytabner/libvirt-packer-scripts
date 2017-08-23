@@ -48,12 +48,11 @@ d-i netcfg/get_hostname string vagrant-xenial64
 d-i netcfg/get_domain string
 
 # Drive Setup
-grub-pc grub-pc/install_devices string /dev/vda1
 d-i grub-installer/only_debian boolean true
 d-i partman-lvm/device_remove_lvm boolean true
 d-i partman-md/device_remove_md boolean true
 
-d-i partman-auto/disk string /dev/vda
+#d-i partman-auto/disk string /dev/vda
 d-i partman-auto/method string lvm
 d-i partman-partitioning/confirm_write_new_label boolean true
 d-i partman/confirm boolean true
